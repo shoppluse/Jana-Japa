@@ -336,13 +336,13 @@ body {
 /* Album Page */
 .upload-controls {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   margin-top: 12px;
 }
 
 .select-input {
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 6px;
   background: rgba(0, 0, 0, 0.35);
   color: var(--text);
   border: 1px solid var(--surface-border);
