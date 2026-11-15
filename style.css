@@ -342,7 +342,7 @@ body {
 
 .select-input {
   padding: 12px;
-  border-radius: 6px;
+  border-radius: 12px;
   background: rgba(0, 0, 0, 0.35);
   color: var(--text);
   border: 1px solid var(--surface-border);
