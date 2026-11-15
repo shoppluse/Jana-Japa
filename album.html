@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marathon Album — Live Moments</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Chanting Album</h1>
+    <p class="subtitle">Live moments from all teams</p>
+  </header>
+
+  <main class="container">
+    <!-- Upload Card -->
+    <section class="card upload-card">
+      <h3>Share a Photo</h3>
+      <div class="upload-controls">
+        <select id="album-team-select" class="select-input">
+          <option value="A">Team A</option>
+          <option value="B">Team B</option>
+          <option value="C">Team C</option>
+          <option value="D">Team D</option>
+          <option value="E">Team E</option>
+          <option value="F">Team F</option>
+        </select>
+
+        <label for="photo-input" class="primary-btn file-label">
+          <span>+ Capture / Upload Photo</span>
+          <input type="file" id="photo-input" accept="image/*" hidden />
+        </label>
+      </div>
+      <p id="upload-status" class="status-text"></p>
+    </section>
+
+    <!-- Live Photo Feed -->
+    <section class="album-grid" id="album-grid">
+      <p class="empty-state">Loading photos...</p>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden">Photo uploaded!</div>
+
+  <!-- Fixed Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="index.html#add" class="nav-btn accent-btn">
+      <span class="nav-icon">+</span>
+      <span class="nav-text">Count</span>
+    </a>
+    <a href="index.html" class="nav-btn">
+      <span class="nav-icon">⌂</span>
+      <span class="nav-text">Home</span>
+    </a>
+    <a href="album.html" class="nav-btn active">
+      <span class="nav-icon">▣</span>
+      <span class="nav-text">Album</span>
+    </a>
+  </nav>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
