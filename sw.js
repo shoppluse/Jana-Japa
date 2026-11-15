@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = "japa-marathon-v1";
+const CACHE_NAME = "japa-marathon-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -27,7 +27,6 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Network-first strategy so live Firebase counts and album updates stay fresh
 self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request).catch(() => caches.match(event.request))
