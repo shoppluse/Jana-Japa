@@ -6,7 +6,7 @@ import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-
 const firebaseConfig = {
   apiKey: "AIzaSyBqaOG0ijQuHd20pcvnlUroXSv4fmivAzs",
   authDomain: "book-marathon-japa.firebaseapp.com",
-  databaseURL: "PASTE_YOUR_REALTIME_DATABASE_URL_HERE",
+  databaseURL: "https://book-marathon-japa-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "book-marathon-japa",
   storageBucket: "book-marathon-japa.firebasestorage.app",
   messagingSenderId: "944387643701",
