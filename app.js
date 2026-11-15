@@ -5,7 +5,9 @@ import {
   onValue,
   update,
   push,
-  increment
+  increment,
+  query,
+  limitToLast
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 // ==========================================
@@ -133,15 +135,106 @@ if (totalCountEl) {
 }
 
 // ==========================================
-// 3. ALBUM LOGIC (album.html — Free RTDB Base64)
+// 3. ALBUM & LIGHTBOX LOGIC (album.html)
 // ==========================================
 const albumGrid = document.getElementById("album-grid");
 if (albumGrid) {
   const photoInput = document.getElementById("photo-input");
+  const cameraInput = document.getElementById("camera-input");
   const teamSelect = document.getElementById("album-team-select");
   const statusEl = document.getElementById("upload-status");
 
-  // Compress image to a lightweight JPEG Data URL (~50 KB)
+  // Lightbox elements
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const lightboxCounter = document.getElementById("lightbox-counter");
+  const infoBtn = document.getElementById("lightbox-info-btn");
+  const closeLbBtn = document.getElementById("lightbox-close-btn");
+  const infoPanel = document.getElementById("lightbox-info-panel");
+  const infoTeam = document.getElementById("info-team");
+  const infoDate = document.getElementById("info-date");
+  const infoTime = document.getElementById("info-time");
+  const prevBtn = document.getElementById("lightbox-prev");
+  const nextBtn = document.getElementById("lightbox-next");
+  const stage = document.getElementById("lightbox-stage");
+
+  let albumEntries = [];
+  let currentIndex = 0;
+
+  function formatDate(ts) {
+    return new Date(ts).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
+    });
+  }
+
+  function formatTime(ts) {
+    return new Date(ts).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  function renderLightbox(index) {
+    if (!albumEntries.length) return;
+    currentIndex = (index + albumEntries.length) % albumEntries.length;
+    const item = albumEntries[currentIndex];
+
+    lightboxImg.src = item.imageUrl;
+    lightboxCounter.textContent = `${currentIndex + 1} / ${albumEntries.length}`;
+    infoTeam.textContent = `Team ${item.team}`;
+    infoDate.textContent = formatDate(item.timestamp);
+    infoTime.textContent = formatTime(item.timestamp);
+  }
+
+  function openLightbox(index) {
+    renderLightbox(index);
+    lightbox.classList.remove("hidden");
+  }
+
+  function closeLightbox() {
+    lightbox.classList.add("hidden");
+    infoPanel.classList.add("hidden");
+    infoBtn.classList.remove("active");
+  }
+
+  infoBtn.addEventListener("click", () => {
+    infoPanel.classList.toggle("hidden");
+    infoBtn.classList.toggle("active");
+  });
+
+  closeLbBtn.addEventListener("click", closeLightbox);
+  prevBtn.addEventListener("click", () => renderLightbox(currentIndex - 1));
+  nextBtn.addEventListener("click", () => renderLightbox(currentIndex + 1));
+
+  // Keyboard navigation
+  document.addEventListener("keydown", (e) => {
+    if (lightbox.classList.contains("hidden")) return;
+    if (e.key === "ArrowLeft") renderLightbox(currentIndex - 1);
+    if (e.key === "ArrowRight") renderLightbox(currentIndex + 1);
+    if (e.key === "Escape") closeLightbox();
+  });
+
+  // Mobile Touch Swipe navigation
+  let touchStartX = 0;
+  stage.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  stage.addEventListener("touchend", (e) => {
+    const touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) {
+        renderLightbox(currentIndex + 1); // Swiped left -> next
+      } else {
+        renderLightbox(currentIndex - 1); // Swiped right -> previous
+      }
+    }
+  }, { passive: true });
+
+  // Compress image before uploading
   function compressToDataURL(file, maxWidth = 720, quality = 0.65) {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -169,7 +262,7 @@ if (albumGrid) {
     });
   }
 
-  photoInput.addEventListener("change", async (e) => {
+  async function handleImageSelected(e) {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -186,39 +279,42 @@ if (albumGrid) {
       });
 
       statusEl.textContent = "";
-      photoInput.value = "";
+      e.target.value = "";
       showToast("Photo shared with all teams!");
     } catch (err) {
       statusEl.textContent = "Upload failed: " + err.message;
     }
-  });
+  }
 
-  const albumRef = dbRef(db, "marathon/album");
-  onValue(albumRef, (snapshot) => {
+  photoInput.addEventListener("change", handleImageSelected);
+  if (cameraInput) {
+    cameraInput.addEventListener("change", handleImageSelected);
+  }
+
+  // Load latest 50 photos in real time
+  const albumQuery = query(dbRef(db, "marathon/album"), limitToLast(50));
+  onValue(albumQuery, (snapshot) => {
     const data = snapshot.val();
     albumGrid.innerHTML = "";
 
     if (!data) {
+      albumEntries = [];
       albumGrid.innerHTML = `<p class="empty-state">No photos yet. Be the first team to share!</p>`;
       return;
     }
 
-    const entries = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
-    entries.forEach((item) => {
-      const timeStr = new Date(item.timestamp).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
-
+    albumEntries = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
+    albumEntries.forEach((item, idx) => {
       const card = document.createElement("div");
       card.className = "photo-card";
       card.innerHTML = `
         <img src="${item.imageUrl}" alt="Team ${item.team} chanting" loading="lazy" />
         <div class="photo-meta">
           <span class="photo-team">Team ${item.team}</span>
-          <span>${timeStr}</span>
+          <span>${formatDate(item.timestamp)}</span>
         </div>
       `;
+      card.addEventListener("click", () => openLightbox(idx));
       albumGrid.appendChild(card);
     });
   });
