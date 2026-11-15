@@ -3,15 +3,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getDatabase } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-// TODO: Replace with your Firebase project's config object
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBqaOG0ijQuHd20pcvnlUroXSv4fmivAzs",
+  authDomain: "book-marathon-japa.firebaseapp.com",
+  databaseURL: "PASTE_YOUR_REALTIME_DATABASE_URL_HERE",
+  projectId: "book-marathon-japa",
+  storageBucket: "book-marathon-japa.firebasestorage.app",
+  messagingSenderId: "944387643701",
+  appId: "1:944387643701:web:ac064979548f4b6ce8d47c"
 };
 
 const app = initializeApp(firebaseConfig);
