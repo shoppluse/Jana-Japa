@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="icon-512.png" />
   <link rel="apple-touch-icon" href="icon-512.png" />
   <title>Marathon Album — Live Moments</title>
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="app-header">
@@ -30,17 +30,10 @@
           <option value="F">Team F</option>
         </select>
 
-        <div class="action-pair">
-          <label for="camera-input" class="media-btn" title="Capture Photo" aria-label="Capture Photo">
-            <span>📸</span>
-            <input type="file" id="camera-input" accept="image/*" capture="environment" hidden />
-          </label>
-
-          <label for="photo-input" class="media-btn" title="Upload Photo" aria-label="Upload Photo">
-            <span>📁</span>
-            <input type="file" id="photo-input" accept="image/*" hidden />
-          </label>
-        </div>
+        <label for="photo-input" class="primary-btn file-label">
+          <span>+ Capture / Upload Photo</span>
+          <input type="file" id="photo-input" accept="image/*" hidden />
+        </label>
       </div>
       <p id="upload-status" class="status-text"></p>
     </section>
@@ -50,39 +43,6 @@
       <p class="empty-state">Loading photos...</p>
     </section>
   </main>
-
-  <!-- Full-Screen Photo Lightbox -->
-  <div id="lightbox" class="lightbox hidden">
-    <div class="lightbox-top">
-      <span id="lightbox-counter" class="lightbox-counter">1 / 1</span>
-      <div class="lightbox-actions">
-        <button id="lightbox-info-btn" class="lb-icon-btn" aria-label="Photo Info" title="Details">ⓘ</button>
-        <button id="lightbox-close-btn" class="lb-icon-btn" aria-label="Close" title="Close">&times;</button>
-      </div>
-    </div>
-
-    <div class="lightbox-stage" id="lightbox-stage">
-      <button id="lightbox-prev" class="lb-nav-btn lb-prev" aria-label="Previous">&#10094;</button>
-      <img id="lightbox-img" src="" alt="Chanting moment" />
-      <button id="lightbox-next" class="lb-nav-btn lb-next" aria-label="Next">&#10095;</button>
-    </div>
-
-    <!-- Info Drawer (Toggled by Info Button) -->
-    <div id="lightbox-info-panel" class="lightbox-info-panel hidden">
-      <div class="info-row">
-        <span class="info-label">Uploaded By</span>
-        <span id="info-team" class="info-value highlight">Team A</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Date</span>
-        <span id="info-date" class="info-value">--</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Time</span>
-        <span id="info-time" class="info-value">--</span>
-      </div>
-    </div>
-  </div>
 
   <div id="toast" class="toast hidden">Photo uploaded!</div>
 
@@ -102,7 +62,7 @@
     </a>
   </nav>
 
-  <script type="module" src="app.js?v=5"></script>
+  <script type="module" src="app.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js");
