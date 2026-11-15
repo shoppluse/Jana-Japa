@@ -17,7 +17,7 @@ import {
 // 1. MARATHON CONFIGURATION (Edit dates here)
 // ==========================================
 const START_DATE = "2026-11-15"; // YYYY-MM-DD
-const END_DATE   = "2026-12-25"; // YYYY-MM-DD
+const END_DATE   = "2027-01-31"; // YYYY-MM-DD
 const TARGET_COUNT = 20000;
 const TEAMS = ["A", "B", "C", "D", "E", "F"];
 
