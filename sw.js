@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = "japa-marathon-v4";
+const CACHE_NAME = "japa-marathon-v5";
 const ASSETS = [
   "./",
   "./index.html",
