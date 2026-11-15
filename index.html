@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Srila Prabhupada Book Marathon — Japa Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Hare Krishna Maha-Mantra Marathon</h1>
+    <p id="marathon-dates" class="subtitle">Loading schedule...</p>
+  </header>
+
+  <main class="container">
+    <!-- 1st Block: Total Count -->
+    <section class="card hero-card">
+      <div class="card-header">
+        <span class="label">Total Chanted (1 Full Round)</span>
+        <span id="day-badge" class="badge">Day --</span>
+      </div>
+      <div class="big-number" id="total-count">0</div>
+      <div class="progress-wrapper">
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+        </div>
+        <div class="progress-meta">
+          <span id="progress-percent">0%</span>
+          <span>Target: <strong id="target-display">20,000</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2nd Block: Today's Count -->
+    <section class="card today-card">
+      <div class="card-header">
+        <span class="label">Today's Count</span>
+        <span id="today-date" class="date-tag">YYYY-MM-DD</span>
+      </div>
+      <div class="medium-number" id="today-count">0</div>
+    </section>
+
+    <!-- 3rd Block: Teams A - F -->
+    <section class="teams-section">
+      <h2 class="section-title">Teams</h2>
+      <div class="teams-grid" id="teams-grid">
+        <!-- Populated dynamically by app.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Increment Modal -->
+  <div id="increment-modal" class="modal hidden">
+    <div class="modal-content card">
+      <div class="modal-header">
+        <h3>Log Chanted Rounds</h3>
+        <button id="close-modal" class="icon-btn" aria-label="Close">&times;</button>
+      </div>
+      <label class="input-label">Select Your Team</label>
+      <div class="team-selector" id="team-selector">
+        <button type="button" class="team-pill active" data-team="A">Team A</button>
+        <button type="button" class="team-pill" data-team="B">Team B</button>
+        <button type="button" class="team-pill" data-team="C">Team C</button>
+        <button type="button" class="team-pill" data-team="D">Team D</button>
+        <button type="button" class="team-pill" data-team="E">Team E</button>
+        <button type="button" class="team-pill" data-team="F">Team F</button>
+      </div>
+
+      <label class="input-label" for="round-amount">People Who Chanted 1 Round</label>
+      <div class="stepper">
+        <button type="button" id="dec-amt" class="step-btn">-</button>
+        <input type="number" id="round-amount" value="1" min="1" max="500" />
+        <button type="button" id="inc-amt" class="step-btn">+</button>
+      </div>
+
+      <button type="button" id="submit-count" class="primary-btn">
+        Submit Count
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden">Updated!</div>
+
+  <!-- Fixed Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <button id="open-increment" class="nav-btn accent-btn">
+      <span class="nav-icon">+</span>
+      <span class="nav-text">Count</span>
+    </button>
+    <a href="index.html" class="nav-btn active">
+      <span class="nav-icon">⌂</span>
+      <span class="nav-text">Home</span>
+    </a>
+    <a href="album.html" class="nav-btn">
+      <span class="nav-icon">▣</span>
+      <span class="nav-text">Album</span>
+    </a>
+  </nav>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
