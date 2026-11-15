@@ -1,5 +1,5 @@
 // app.js
-import { db, storage } from "./firebase-config.js";
+import { db } from "./firebase-config.js";
 import {
   ref as dbRef,
   onValue,
@@ -7,21 +7,15 @@ import {
   push,
   increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-import {
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 // ==========================================
 // 1. MARATHON CONFIGURATION (Edit dates here)
 // ==========================================
 const START_DATE = "2026-11-15"; // YYYY-MM-DD
-const END_DATE   = "2027-01-31"; // YYYY-MM-DD
+const END_DATE   = "2026-12-25"; // YYYY-MM-DD
 const TARGET_COUNT = 20000;
 const TEAMS = ["A", "B", "C", "D", "E", "F"];
 
-// Helper: Get local YYYY-MM-DD string
 function getTodayKey() {
   const now = new Date();
   const offset = now.getTimezoneOffset() * 60000;
@@ -46,7 +40,6 @@ if (totalCountEl) {
   document.getElementById("target-display").textContent = TARGET_COUNT.toLocaleString();
   document.getElementById("marathon-dates").textContent = `${START_DATE} to ${END_DATE}`;
 
-  // Calculate Day X of Y
   const start = new Date(START_DATE);
   const end = new Date(END_DATE);
   const today = new Date(todayKey);
@@ -54,7 +47,6 @@ if (totalCountEl) {
   const currentDay = Math.min(totalDays, Math.max(1, Math.round((today - start) / 86400000) + 1));
   document.getElementById("day-badge").textContent = `Day ${currentDay} of ${totalDays}`;
 
-  // Real-time listener for all teams
   const teamsRef = dbRef(db, "marathon/teams");
   onValue(teamsRef, (snapshot) => {
     const data = snapshot.val() || {};
@@ -92,7 +84,6 @@ if (totalCountEl) {
     document.getElementById("progress-percent").textContent = `${pct}%`;
   });
 
-  // Modal & Increment Controls
   const modal = document.getElementById("increment-modal");
   const openBtn = document.getElementById("open-increment");
   const closeBtn = document.getElementById("close-modal");
@@ -142,7 +133,7 @@ if (totalCountEl) {
 }
 
 // ==========================================
-// 3. ALBUM LOGIC (album.html)
+// 3. ALBUM LOGIC (album.html — Free RTDB Base64)
 // ==========================================
 const albumGrid = document.getElementById("album-grid");
 if (albumGrid) {
@@ -150,8 +141,8 @@ if (albumGrid) {
   const teamSelect = document.getElementById("album-team-select");
   const statusEl = document.getElementById("upload-status");
 
-  // Compress image before uploading so mobile uploads are fast
-  function compressImage(file, maxWidth = 1080, quality = 0.75) {
+  // Compress image to a lightweight JPEG Data URL (~50 KB)
+  function compressToDataURL(file, maxWidth = 720, quality = 0.65) {
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -170,7 +161,7 @@ if (albumGrid) {
           canvas.height = height;
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0, width, height);
-          canvas.toBlob((blob) => resolve(blob), "image/jpeg", quality);
+          resolve(canvas.toDataURL("image/jpeg", quality));
         };
         img.src = e.target.result;
       };
@@ -183,19 +174,14 @@ if (albumGrid) {
     if (!file) return;
 
     const team = teamSelect.value;
-    statusEl.textContent = "Compressing & uploading photo...";
+    statusEl.textContent = "Compressing & sharing photo...";
 
     try {
-      const compressedBlob = await compressImage(file);
-      const fileName = `marathon/${Date.now()}_team_${team}.jpg`;
-      const imgRef = storageRef(storage, fileName);
-
-      await uploadBytes(imgRef, compressedBlob);
-      const downloadURL = await getDownloadURL(imgRef);
+      const compressedDataUrl = await compressToDataURL(file);
 
       await push(dbRef(db, "marathon/album"), {
         team,
-        imageUrl: downloadURL,
+        imageUrl: compressedDataUrl,
         timestamp: Date.now()
       });
 
@@ -207,7 +193,6 @@ if (albumGrid) {
     }
   });
 
-  // Real-time listener for album photos
   const albumRef = dbRef(db, "marathon/album");
   onValue(albumRef, (snapshot) => {
     const data = snapshot.val();
