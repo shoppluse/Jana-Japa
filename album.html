@@ -30,8 +30,13 @@
           <option value="F">Team F</option>
         </select>
 
-        <label for="photo-input" class="primary-btn file-label">
-          <span>+ Capture / Upload Photo</span>
+        <label for="camera-input" class="primary-btn file-label">
+          <span>📷 Capture</span>
+          <input type="file" id="camera-input" accept="image/*" capture="environment" hidden />
+        </label>
+
+        <label for="photo-input" class="secondary-btn file-label">
+          <span>🖼️ Gallery</span>
           <input type="file" id="photo-input" accept="image/*" hidden />
         </label>
       </div>
@@ -43,6 +48,39 @@
       <p class="empty-state">Loading photos...</p>
     </section>
   </main>
+
+  <!-- Full-Screen Photo Lightbox -->
+  <div id="lightbox" class="lightbox hidden">
+    <div class="lightbox-top">
+      <span id="lightbox-counter" class="lightbox-counter">1 / 1</span>
+      <div class="lightbox-actions">
+        <button id="lightbox-info-btn" class="lb-icon-btn" aria-label="Photo Info" title="Details">ⓘ</button>
+        <button id="lightbox-close-btn" class="lb-icon-btn" aria-label="Close" title="Close">&times;</button>
+      </div>
+    </div>
+
+    <div class="lightbox-stage" id="lightbox-stage">
+      <button id="lightbox-prev" class="lb-nav-btn lb-prev" aria-label="Previous">&#10094;</button>
+      <img id="lightbox-img" src="" alt="Chanting moment" />
+      <button id="lightbox-next" class="lb-nav-btn lb-next" aria-label="Next">&#10095;</button>
+    </div>
+
+    <!-- Info Drawer (Toggled by Info Button) -->
+    <div id="lightbox-info-panel" class="lightbox-info-panel hidden">
+      <div class="info-row">
+        <span class="info-label">Uploaded By</span>
+        <span id="info-team" class="info-value highlight">Team A</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Date</span>
+        <span id="info-date" class="info-value">--</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Time</span>
+        <span id="info-time" class="info-value">--</span>
+      </div>
+    </div>
+  </div>
 
   <div id="toast" class="toast hidden">Photo uploaded!</div>
 
