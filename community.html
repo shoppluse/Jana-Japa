@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f1117" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="icon-512.png" />
+  <link rel="apple-touch-icon" href="icon-512.png" />
+  <title>Join Community — ISKCON Mysore</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Hare Krishna</h1>
+    <p class="subtitle">Scan Here to join</p>
+  </header>
+
+  <main class="container community-container">
+    <!-- Swipeable QR Showcase Card -->
+    <section class="card qr-showcase-card" id="qr-swipe-area">
+      <div class="qr-top-bar">
+        <span id="community-badge" class="badge">1 of 2</span>
+        <span class="swipe-hint">Swipe &larr; &rarr;</span>
+      </div>
+
+      <h2 id="community-title" class="community-title">
+        ISKCON Mysore - Harinam Japa ಹರೇ ಕೃಷ್ಣ
+      </h2>
+
+      <div class="qr-frame-wrapper">
+        <button type="button" id="qr-prev" class="qr-arrow-btn" aria-label="Previous QR">&#10094;</button>
+        <div class="qr-frame">
+          <img id="community-qr-img" src="image1.png" alt="Community QR Code" />
+        </div>
+        <button type="button" id="qr-next" class="qr-arrow-btn" aria-label="Next QR">&#10095;</button>
+      </div>
+
+      <!-- Pagination Dots -->
+      <div class="qr-dots">
+        <button type="button" class="qr-dot active" data-index="0" aria-label="Community 1"></button>
+        <button type="button" class="qr-dot" data-index="1" aria-label="Community 2"></button>
+      </div>
+
+      <!-- Dynamic 4 Points Below QR -->
+      <ol id="community-points" class="community-points-list">
+        <li>Daily Japa chanting updates and marathon sankalpa reminders.</li>
+        <li>Connect with devotees chanting together across Mysuru.</li>
+        <li>Share inspiring photos and daily round milestones.</li>
+        <li>Open WhatsApp camera and scan the QR code above to join.</li>
+      </ol>
+    </section>
+  </main>
+
+  <!-- Fixed Bottom Navigation Bar (5 Buttons) -->
+  <nav class="bottom-nav bottom-nav-5">
+    <a href="index.html#add" class="nav-btn accent-btn">
+      <span class="nav-icon">+</span>
+      <span class="nav-text">Japa</span>
+    </a>
+    <a href="index.html#books" class="nav-btn book-accent-btn">
+      <span class="nav-icon">+</span>
+      <span class="nav-text">Books</span>
+    </a>
+    <a href="index.html" class="nav-btn">
+      <span class="nav-icon">⌂</span>
+      <span class="nav-text">Home</span>
+    </a>
+    <a href="album.html" class="nav-btn">
+      <span class="nav-icon">▣</span>
+      <span class="nav-text">Album</span>
+    </a>
+    <a href="community.html" class="nav-btn active">
+      <span class="nav-icon">👥</span>
+      <span class="nav-text">Join</span>
+    </a>
+  </nav>
+
+  <script type="module" src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js");
+    }
+  </script>
+</body>
+</html>
