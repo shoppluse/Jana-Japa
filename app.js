@@ -324,3 +324,79 @@ if (albumGrid) {
     });
   });
 }
+
+// ==========================================
+// 4. JOIN COMMUNITY LOGIC (community.html)
+// ==========================================
+const qrSwipeArea = document.getElementById("qr-swipe-area");
+if (qrSwipeArea) {
+  const COMMUNITIES = [
+    {
+      title: "ISKCON Mysore - Harinam Japa ಹರೇ ಕೃಷ್ಣ",
+      image: "image1.png",
+      points: [
+        "Daily Japa chanting updates and marathon sankalpa reminders.",
+        "Connect with devotees chanting together across Mysuru.",
+        "Share inspiring photos and daily round milestones.",
+        "Open WhatsApp camera and scan the QR code above to join."
+      ]
+    },
+    {
+      title: "Krishna Connect - Youth | ISKCON Mysore",
+      image: "image2.png",
+      points: [
+        "Weekly youth spiritual sessions, kirtans, and Gita discussions.",
+        "Stay updated on ISKCON Mysore youth festivals and retreats.",
+        "Collaborate in Book Marathon seva and campus outreach.",
+        "Open WhatsApp camera and scan the QR code above to join."
+      ]
+    }
+  ];
+
+  const badgeEl = document.getElementById("community-badge");
+  const titleEl = document.getElementById("community-title");
+  const imgEl = document.getElementById("community-qr-img");
+  const pointsEl = document.getElementById("community-points");
+  const dots = document.querySelectorAll(".qr-dot");
+  let activeSlide = 0;
+
+  function renderCommunitySlide(idx) {
+    activeSlide = (idx + COMMUNITIES.length) % COMMUNITIES.length;
+    const item = COMMUNITIES[activeSlide];
+
+    badgeEl.textContent = `${activeSlide + 1} of ${COMMUNITIES.length}`;
+    titleEl.textContent = item.title;
+    imgEl.src = item.image;
+    pointsEl.innerHTML = item.points.map((pt) => `<li>${pt}</li>`).join("");
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("active", i === activeSlide);
+    });
+  }
+
+  document.getElementById("qr-prev").addEventListener("click", () => {
+    renderCommunitySlide(activeSlide - 1);
+  });
+
+  document.getElementById("qr-next").addEventListener("click", () => {
+    renderCommunitySlide(activeSlide + 1);
+  });
+
+  dots.forEach((dot) => {
+    dot.addEventListener("click", () => {
+      renderCommunitySlide(Number(dot.dataset.index));
+    });
+  });
+
+  let startX = 0;
+  qrSwipeArea.addEventListener("touchstart", (e) => {
+    startX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  qrSwipeArea.addEventListener("touchend", (e) => {
+    const diff = startX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 40) {
+      renderCommunitySlide(diff > 0 ? activeSlide + 1 : activeSlide - 1);
+    }
+  }, { passive: true });
+}
