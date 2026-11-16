@@ -235,13 +235,99 @@ if (totalCountEl) {
 }
 
 // ==========================================
-// 3. ALBUM LOGIC (album.html)
+// 3. ALBUM & LIGHTBOX LOGIC (album.html)
 // ==========================================
 const albumGrid = document.getElementById("album-grid");
 if (albumGrid) {
   const photoInput = document.getElementById("photo-input");
   const teamSelect = document.getElementById("album-team-select");
   const statusEl = document.getElementById("upload-status");
+
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const lightboxCounter = document.getElementById("lightbox-counter");
+  const infoBtn = document.getElementById("lightbox-info-btn");
+  const closeLbBtn = document.getElementById("lightbox-close-btn");
+  const infoPanel = document.getElementById("lightbox-info-panel");
+  const infoTeam = document.getElementById("info-team");
+  const infoDate = document.getElementById("info-date");
+  const infoTime = document.getElementById("info-time");
+  const prevBtn = document.getElementById("lightbox-prev");
+  const nextBtn = document.getElementById("lightbox-next");
+  const stage = document.getElementById("lightbox-stage");
+
+  let albumEntries = [];
+  let currentIndex = 0;
+
+  function formatDate(ts) {
+    return new Date(ts).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
+    });
+  }
+
+  function formatTime(ts) {
+    return new Date(ts).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  function renderLightbox(index) {
+    if (!albumEntries.length) return;
+    currentIndex = (index + albumEntries.length) % albumEntries.length;
+    const item = albumEntries[currentIndex];
+
+    lightboxImg.src = item.imageUrl;
+    lightboxCounter.textContent = `${currentIndex + 1} / ${albumEntries.length}`;
+    infoTeam.textContent = `Team ${item.team}`;
+    infoDate.textContent = formatDate(item.timestamp);
+    infoTime.textContent = formatTime(item.timestamp);
+  }
+
+  function openLightbox(index) {
+    renderLightbox(index);
+    lightbox.classList.remove("hidden");
+  }
+
+  function closeLightbox() {
+    lightbox.classList.add("hidden");
+    infoPanel.classList.add("hidden");
+    infoBtn.classList.remove("active");
+  }
+
+  if (infoBtn) {
+    infoBtn.addEventListener("click", () => {
+      infoPanel.classList.toggle("hidden");
+      infoBtn.classList.toggle("active");
+    });
+  }
+
+  if (closeLbBtn) closeLbBtn.addEventListener("click", closeLightbox);
+  if (prevBtn) prevBtn.addEventListener("click", () => renderLightbox(currentIndex - 1));
+  if (nextBtn) nextBtn.addEventListener("click", () => renderLightbox(currentIndex + 1));
+
+  document.addEventListener("keydown", (e) => {
+    if (!lightbox || lightbox.classList.contains("hidden")) return;
+    if (e.key === "ArrowLeft") renderLightbox(currentIndex - 1);
+    if (e.key === "ArrowRight") renderLightbox(currentIndex + 1);
+    if (e.key === "Escape") closeLightbox();
+  });
+
+  if (stage) {
+    let touchStartX = 0;
+    stage.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    stage.addEventListener("touchend", (e) => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 40) {
+        renderLightbox(diff > 0 ? currentIndex + 1 : currentIndex - 1);
+      }
+    }, { passive: true });
+  }
 
   function compressToDataURL(file, maxWidth = 720, quality = 0.65) {
     return new Promise((resolve) => {
@@ -300,16 +386,14 @@ if (albumGrid) {
     albumGrid.innerHTML = "";
 
     if (!data) {
+      albumEntries = [];
       albumGrid.innerHTML = `<p class="empty-state">No photos yet. Be the first team to share!</p>`;
       return;
     }
 
-    const entries = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
-    entries.forEach((item) => {
-      const timeStr = new Date(item.timestamp).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
+    albumEntries = Object.values(data).sort((a, b) => b.timestamp - a.timestamp);
+    albumEntries.forEach((item, idx) => {
+      const timeStr = formatTime(item.timestamp);
 
       const card = document.createElement("div");
       card.className = "photo-card";
@@ -320,6 +404,7 @@ if (albumGrid) {
           <span>${timeStr}</span>
         </div>
       `;
+      card.addEventListener("click", () => openLightbox(idx));
       albumGrid.appendChild(card);
     });
   });
