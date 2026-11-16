@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="icon-512.png" />
   <link rel="apple-touch-icon" href="icon-512.png" />
   <title>Marathon Album — Live Moments</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=7" />
 </head>
 <body>
   <header class="app-header">
@@ -44,6 +44,39 @@
     </section>
   </main>
 
+  <!-- Full-Screen Photo Lightbox -->
+  <div id="lightbox" class="lightbox hidden">
+    <div class="lightbox-top">
+      <span id="lightbox-counter" class="lightbox-counter">1 / 1</span>
+      <div class="lightbox-actions">
+        <button id="lightbox-info-btn" class="lb-icon-btn" aria-label="Photo Info" title="Details">ⓘ</button>
+        <button id="lightbox-close-btn" class="lb-icon-btn" aria-label="Close" title="Close">&times;</button>
+      </div>
+    </div>
+
+    <div class="lightbox-stage" id="lightbox-stage">
+      <button id="lightbox-prev" class="lb-nav-btn lb-prev" aria-label="Previous">&#10094;</button>
+      <img id="lightbox-img" src="" alt="Chanting moment" />
+      <button id="lightbox-next" class="lb-nav-btn lb-next" aria-label="Next">&#10095;</button>
+    </div>
+
+    <!-- Info Drawer -->
+    <div id="lightbox-info-panel" class="lightbox-info-panel hidden">
+      <div class="info-row">
+        <span class="info-label">Uploaded By</span>
+        <span id="info-team" class="info-value highlight">Team A</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Date</span>
+        <span id="info-date" class="info-value">--</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Time</span>
+        <span id="info-time" class="info-value">--</span>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast hidden">Photo uploaded!</div>
 
   <!-- Fixed Bottom Navigation Bar (5 Buttons) -->
@@ -70,7 +103,7 @@
     </a>
   </nav>
 
-  <script type="module" src="app.js"></script>
+  <script type="module" src="app.js?v=7"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js");
