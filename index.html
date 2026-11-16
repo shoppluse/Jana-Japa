@@ -17,34 +17,55 @@
   </header>
 
   <main class="container">
-    <!-- 1st Block: Total Count -->
-    <section class="card hero-card">
-      <div class="card-header">
-        <span class="label">Total Chanted (1 Full Round)</span>
-        <span id="day-badge" class="badge">Day --</span>
-      </div>
-      <div class="big-number" id="total-count">0</div>
-      <div class="progress-wrapper">
-        <div class="progress-bar">
-          <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+    <!-- Top Summary Row: Fills Full Width on Laptop -->
+    <div class="summary-grid">
+      <!-- 1st Block: Total Chanted & Total Books -->
+      <section class="card hero-card">
+        <div class="card-header">
+          <span class="label">Total Chanted (1 Full Round)</span>
+          <span id="day-badge" class="badge">Day --</span>
         </div>
-        <div class="progress-meta">
-          <span id="progress-percent">0%</span>
-          <span>Target: <strong id="target-display">20,000</strong></span>
+        <div class="dual-stats">
+          <div class="stat-col">
+            <span class="stat-sub">Japa Rounds</span>
+            <div class="big-number" id="total-count">0</div>
+          </div>
+          <div class="stat-col stat-divider">
+            <span class="stat-sub">Total Books</span>
+            <div class="big-number book-color" id="total-books-count">0</div>
+          </div>
         </div>
-      </div>
-    </section>
+        <div class="progress-wrapper">
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+          </div>
+          <div class="progress-meta">
+            <span id="progress-percent">0%</span>
+            <span>Target: <strong id="target-display">20,000</strong></span>
+          </div>
+        </div>
+      </section>
 
-    <!-- 2nd Block: Today's Count -->
-    <section class="card today-card">
-      <div class="card-header">
-        <span class="label">Today's Count</span>
-        <span id="today-date" class="date-tag">YYYY-MM-DD</span>
-      </div>
-      <div class="medium-number" id="today-count">0</div>
-    </section>
+      <!-- 2nd Block: Today's Japa & Today's Books -->
+      <section class="card today-card">
+        <div class="card-header">
+          <span class="label">Today's Count</span>
+          <span id="today-date" class="date-tag">YYYY-MM-DD</span>
+        </div>
+        <div class="dual-stats today-dual">
+          <div class="stat-col">
+            <span class="stat-sub">Today's Japa</span>
+            <div class="medium-number" id="today-count">0</div>
+          </div>
+          <div class="stat-col stat-divider">
+            <span class="stat-sub">Today's Books</span>
+            <div class="medium-number book-color" id="today-books-count">0</div>
+          </div>
+        </div>
+      </section>
+    </div>
 
-    <!-- 3rd Block: Teams A - F (1 Row Per Team with Books Table) -->
+    <!-- 3rd Block: Teams A - F -->
     <section class="teams-section">
       <h2 class="section-title">Teams</h2>
       <div class="teams-list" id="teams-grid">
