@@ -15,6 +15,7 @@ const START_DATE = "2026-11-15"; // YYYY-MM-DD
 const END_DATE   = "2027-01-31"; // YYYY-MM-DD
 const TARGET_COUNT = 20000;
 const TEAMS = ["A", "B", "C", "D", "E", "F"];
+const BOOK_TYPES = ["S", "M", "B", "MB"];
 
 function getTodayKey() {
   const now = new Date();
@@ -64,14 +65,45 @@ if (totalCountEl) {
       grandTotal += teamTotal;
       todayTotal += teamToday;
 
+      // Book counts for S, M, B, MB
+      const booksTotalObj = (teamData.books && teamData.books.total) || {};
+      const booksDailyObj = (teamData.books && teamData.books.daily && teamData.books.daily[todayKey]) || {};
+
+      const todayCells = BOOK_TYPES.map((type) => `<td class="today-val">${Number(booksDailyObj[type] || 0)}</td>`).join("");
+      const totalCells = BOOK_TYPES.map((type) => `<td class="total-val">${Number(booksTotalObj[type] || 0)}</td>`).join("");
+
       const card = document.createElement("div");
-      card.className = "team-card";
+      card.className = "team-row-card";
       card.innerHTML = `
-        <div class="team-card-top">
-          <span class="team-name">Team ${team}</span>
-          <span class="team-today">+${teamToday} today</span>
+        <div class="team-japa-side">
+          <div class="team-title-row">
+            <span class="team-name">Team ${team}</span>
+            <span class="team-today">+${teamToday} today</span>
+          </div>
+          <div class="team-total">${teamTotal.toLocaleString()}</div>
         </div>
-        <div class="team-total">${teamTotal.toLocaleString()}</div>
+
+        <table class="books-table">
+          <thead>
+            <tr>
+              <th class="row-label">Books</th>
+              <th>S</th>
+              <th>M</th>
+              <th>B</th>
+              <th>MB</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">Today</td>
+              ${todayCells}
+            </tr>
+            <tr>
+              <td class="row-label">Total</td>
+              ${totalCells}
+            </tr>
+          </tbody>
+        </table>
       `;
       grid.appendChild(card);
     });
@@ -84,6 +116,7 @@ if (totalCountEl) {
     document.getElementById("progress-percent").textContent = `${pct}%`;
   });
 
+  // --- Japa Modal Controls ---
   const modal = document.getElementById("increment-modal");
   const openBtn = document.getElementById("open-increment");
   const closeBtn = document.getElementById("close-modal");
@@ -125,15 +158,72 @@ if (totalCountEl) {
       await update(dbRef(db), updates);
       modal.classList.add("hidden");
       amountInput.value = 1;
-      showToast(`+${count} added to Team ${selectedTeam}!`);
+      showToast(`+${count} Japa added to Team ${selectedTeam}!`);
     } catch (err) {
       alert("Error updating count: " + err.message);
+    }
+  });
+
+  // --- Books Modal Controls ---
+  const bookModal = document.getElementById("book-modal");
+  const openBookBtn = document.getElementById("open-book-modal");
+  const closeBookBtn = document.getElementById("close-book-modal");
+  const bookAmountInput = document.getElementById("book-amount");
+  let selectedBookTeam = "A";
+  let selectedBookType = "S";
+
+  if (window.location.hash === "#books") {
+    bookModal.classList.remove("hidden");
+  }
+
+  openBookBtn.addEventListener("click", () => bookModal.classList.remove("hidden"));
+  closeBookBtn.addEventListener("click", () => bookModal.classList.add("hidden"));
+
+  document.querySelectorAll(".book-team-pill").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".book-team-pill").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedBookTeam = btn.dataset.team;
+    });
+  });
+
+  document.querySelectorAll(".book-type-pill").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".book-type-pill").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedBookType = btn.dataset.book;
+    });
+  });
+
+  document.getElementById("dec-book-amt").addEventListener("click", () => {
+    bookAmountInput.value = Math.max(1, Number(bookAmountInput.value) - 1);
+  });
+
+  document.getElementById("inc-book-amt").addEventListener("click", () => {
+    bookAmountInput.value = Number(bookAmountInput.value) + 1;
+  });
+
+  document.getElementById("submit-book-count").addEventListener("click", async () => {
+    const qty = Math.max(1, parseInt(bookAmountInput.value, 10) || 1);
+    const activeDay = getTodayKey();
+
+    const updates = {};
+    updates[`marathon/teams/${selectedBookTeam}/books/total/${selectedBookType}`] = increment(qty);
+    updates[`marathon/teams/${selectedBookTeam}/books/daily/${activeDay}/${selectedBookType}`] = increment(qty);
+
+    try {
+      await update(dbRef(db), updates);
+      bookModal.classList.add("hidden");
+      bookAmountInput.value = 1;
+      showToast(`+${qty} ${selectedBookType} book(s) added to Team ${selectedBookTeam}!`);
+    } catch (err) {
+      alert("Error updating books: " + err.message);
     }
   });
 }
 
 // ==========================================
-// 3. ALBUM LOGIC (album.html — Free RTDB Base64)
+// 3. ALBUM LOGIC (album.html — Unchanged)
 // ==========================================
 const albumGrid = document.getElementById("album-grid");
 if (albumGrid) {
@@ -141,7 +231,6 @@ if (albumGrid) {
   const teamSelect = document.getElementById("album-team-select");
   const statusEl = document.getElementById("upload-status");
 
-  // Compress image to a lightweight JPEG Data URL (~50 KB)
   function compressToDataURL(file, maxWidth = 720, quality = 0.65) {
     return new Promise((resolve) => {
       const reader = new FileReader();
