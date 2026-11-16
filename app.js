@@ -53,6 +53,8 @@ if (totalCountEl) {
     const data = snapshot.val() || {};
     let grandTotal = 0;
     let todayTotal = 0;
+    let grandBooksTotal = 0;
+    let todayBooksTotal = 0;
 
     const grid = document.getElementById("teams-grid");
     grid.innerHTML = "";
@@ -68,6 +70,11 @@ if (totalCountEl) {
       // Book counts for S, M, B, MB
       const booksTotalObj = (teamData.books && teamData.books.total) || {};
       const booksDailyObj = (teamData.books && teamData.books.daily && teamData.books.daily[todayKey]) || {};
+
+      BOOK_TYPES.forEach((type) => {
+        grandBooksTotal += Number(booksTotalObj[type] || 0);
+        todayBooksTotal += Number(booksDailyObj[type] || 0);
+      });
 
       const todayCells = BOOK_TYPES.map((type) => `<td class="today-val">${Number(booksDailyObj[type] || 0)}</td>`).join("");
       const totalCells = BOOK_TYPES.map((type) => `<td class="total-val">${Number(booksTotalObj[type] || 0)}</td>`).join("");
@@ -110,6 +117,11 @@ if (totalCountEl) {
 
     totalCountEl.textContent = grandTotal.toLocaleString();
     document.getElementById("today-count").textContent = todayTotal.toLocaleString();
+
+    const totalBooksEl = document.getElementById("total-books-count");
+    const todayBooksEl = document.getElementById("today-books-count");
+    if (totalBooksEl) totalBooksEl.textContent = grandBooksTotal.toLocaleString();
+    if (todayBooksEl) todayBooksEl.textContent = todayBooksTotal.toLocaleString();
 
     const pct = Math.min(100, ((grandTotal / TARGET_COUNT) * 100)).toFixed(1);
     document.getElementById("progress-fill").style.width = `${pct}%`;
@@ -223,7 +235,7 @@ if (totalCountEl) {
 }
 
 // ==========================================
-// 3. ALBUM LOGIC (album.html — Unchanged)
+// 3. ALBUM LOGIC (album.html)
 // ==========================================
 const albumGrid = document.getElementById("album-grid");
 if (albumGrid) {
