@@ -7,7 +7,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" href="icon-512.png" />
   <link rel="apple-touch-icon" href="icon-512.png" />
-  <title>Srila Prabhupada Book Marathon — Japa Tracker</title>
+  <title>Srila Prabhupada Book Marathon — Japa & Books</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -44,20 +44,20 @@
       <div class="medium-number" id="today-count">0</div>
     </section>
 
-    <!-- 3rd Block: Teams A - F -->
+    <!-- 3rd Block: Teams A - F (1 Row Per Team with Books Table) -->
     <section class="teams-section">
       <h2 class="section-title">Teams</h2>
-      <div class="teams-grid" id="teams-grid">
+      <div class="teams-list" id="teams-grid">
         <!-- Populated dynamically by app.js -->
       </div>
     </section>
   </main>
 
-  <!-- Increment Modal -->
+  <!-- Modal 1: Japa Count Increment -->
   <div id="increment-modal" class="modal hidden">
     <div class="modal-content card">
       <div class="modal-header">
-        <h3>Log Chanted Rounds</h3>
+        <h3>Log Japa Rounds</h3>
         <button id="close-modal" class="icon-btn" aria-label="Close">&times;</button>
       </div>
       <label class="input-label">Select Your Team</label>
@@ -78,7 +78,46 @@
       </div>
 
       <button type="button" id="submit-count" class="primary-btn">
-        Submit Count
+        Submit Japa Count
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal 2: Book Count Increment -->
+  <div id="book-modal" class="modal hidden">
+    <div class="modal-content card">
+      <div class="modal-header">
+        <h3>Log Books Distributed</h3>
+        <button id="close-book-modal" class="icon-btn" aria-label="Close">&times;</button>
+      </div>
+
+      <label class="input-label">Select Your Team</label>
+      <div class="team-selector" id="book-team-selector">
+        <button type="button" class="book-team-pill active" data-team="A">Team A</button>
+        <button type="button" class="book-team-pill" data-team="B">Team B</button>
+        <button type="button" class="book-team-pill" data-team="C">Team C</button>
+        <button type="button" class="book-team-pill" data-team="D">Team D</button>
+        <button type="button" class="book-team-pill" data-team="E">Team E</button>
+        <button type="button" class="book-team-pill" data-team="F">Team F</button>
+      </div>
+
+      <label class="input-label">Select Book Category</label>
+      <div class="book-type-selector" id="book-type-selector">
+        <button type="button" class="book-type-pill active" data-book="S">S</button>
+        <button type="button" class="book-type-pill" data-book="M">M</button>
+        <button type="button" class="book-type-pill" data-book="B">B</button>
+        <button type="button" class="book-type-pill" data-book="MB">MB</button>
+      </div>
+
+      <label class="input-label" for="book-amount">Quantity</label>
+      <div class="stepper">
+        <button type="button" id="dec-book-amt" class="step-btn">-</button>
+        <input type="number" id="book-amount" value="1" min="1" max="1000" />
+        <button type="button" id="inc-book-amt" class="step-btn">+</button>
+      </div>
+
+      <button type="button" id="submit-book-count" class="primary-btn">
+        Submit Book Count
       </button>
     </div>
   </div>
@@ -86,11 +125,15 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast hidden">Updated!</div>
 
-  <!-- Fixed Bottom Navigation Bar -->
-  <nav class="bottom-nav">
+  <!-- Fixed Bottom Navigation Bar (4 Buttons) -->
+  <nav class="bottom-nav bottom-nav-4">
     <button id="open-increment" class="nav-btn accent-btn">
       <span class="nav-icon">+</span>
-      <span class="nav-text">Count</span>
+      <span class="nav-text">Japa Count</span>
+    </button>
+    <button id="open-book-modal" class="nav-btn book-accent-btn">
+      <span class="nav-icon">+</span>
+      <span class="nav-text">Book Count</span>
     </button>
     <a href="index.html" class="nav-btn active">
       <span class="nav-icon">⌂</span>
