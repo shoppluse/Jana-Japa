@@ -1,14 +1,17 @@
 // sw.js
-const CACHE_NAME = "japa-marathon-v2";
+const CACHE_NAME = "japa-marathon-v6";
 const ASSETS = [
   "./",
   "./index.html",
   "./album.html",
+  "./community.html",
   "./style.css",
   "./app.js",
   "./firebase-config.js",
   "./manifest.json",
-  "./icon-512.png"
+  "./icon-512.png",
+  "./image1.png",
+  "./image2.png"
 ];
 
 self.addEventListener("install", (event) => {
