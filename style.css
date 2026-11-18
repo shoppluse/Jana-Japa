@@ -23,8 +23,10 @@ html, body {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
+/* IMPORTANT: Never put perspective or transform on body so position:fixed stays locked */
 body {
   background:
     radial-gradient(circle at 50% -10%, #26314d 0%, transparent 55%),
@@ -33,7 +35,6 @@ body {
   color: var(--text);
   min-height: 100vh;
   padding-bottom: 96px;
-  perspective: 1400px;
 }
 
 /* 3D Extruded Header */
@@ -58,7 +59,7 @@ body {
   margin-top: 5px;
 }
 
-/* 3D Perspective Container + Page-Flip Transitions */
+/* 3D Perspective Container + Self-Contained 3D Page-Flip Transitions */
 .container {
   width: 100%;
   max-width: 100%;
@@ -67,11 +68,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  perspective: 1200px;
   transform-origin: center center;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  will-change: transform, opacity;
   transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
 }
 
@@ -442,25 +441,25 @@ main.container.flip-in-from-left {
   }
 }
 
-/* Fixed 3D Bottom Navigation Bar (5 Tactile Buttons) */
+/* Fixed 3D Bottom Navigation Bar (100% Locked to Screen Viewport) */
 .bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100vw;
+  max-width: 100%;
   height: 76px;
-  background: linear-gradient(180deg, rgba(22, 26, 37, 0.96), rgba(11, 13, 19, 0.99));
+  background: linear-gradient(180deg, rgba(22, 26, 37, 0.98), rgba(11, 13, 19, 1));
   border-top: 1px solid rgba(255, 255, 255, 0.14);
   backdrop-filter: blur(16px);
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 7px;
-  padding: 9px 10px 12px;
-  z-index: 999;
+  padding: 9px 10px calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 9999;
   box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.65);
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
+  touch-action: none;
 }
 
 .nav-btn {
@@ -545,7 +544,7 @@ main.container.flip-in-from-left {
   align-items: flex-end;
   justify-content: center;
   padding: 16px;
-  z-index: 1000;
+  z-index: 10000;
 }
 
 @media (min-width: 768px) {
@@ -796,7 +795,7 @@ main.container.flip-in-from-left {
   inset: 0;
   background: rgba(6, 8, 13, 0.96);
   backdrop-filter: blur(18px);
-  z-index: 1200;
+  z-index: 10500;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -934,7 +933,6 @@ main.container.flip-in-from-left {
   flex-direction: column;
   justify-content: center;
   padding: 8px 16px;
-  perspective: 1200px;
 }
 
 .qr-showcase-card {
@@ -1078,7 +1076,7 @@ main.container.flip-in-from-left {
   border-radius: 999px;
   font-weight: 800;
   font-size: 0.9rem;
-  z-index: 1500;
+  z-index: 11000;
   box-shadow:
     0 10px 24px rgba(0, 0, 0, 0.55),
     0 4px 0 #047857,
