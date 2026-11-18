@@ -504,6 +504,9 @@ if (qrSwipeArea) {
     mainEl.classList.add(
       incomingDir === "next" ? "flip-in-from-right" : "flip-in-from-left"
     );
+    mainEl.addEventListener("animationend", () => {
+      mainEl.classList.remove("flip-in-from-right", "flip-in-from-left");
+    }, { once: true });
   }
 
   let touchStartX = 0;
@@ -514,6 +517,7 @@ if (qrSwipeArea) {
     if (e.touches.length !== 1) return;
 
     if (
+      e.target.closest(".bottom-nav") ||
       e.target.closest("#qr-swipe-area") ||
       e.target.closest(".modal:not(.hidden)") ||
       e.target.closest(".lightbox:not(.hidden)") ||
