@@ -9,6 +9,16 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 // ==========================================
+// 0. PIN BOTTOM NAVIGATION BAR TO VIEWPORT
+// ==========================================
+(function pinBottomNav() {
+  const nav = document.querySelector(".bottom-nav");
+  if (nav && nav.parentElement !== document.body) {
+    document.body.appendChild(nav);
+  }
+})();
+
+// ==========================================
 // 1. MARATHON CONFIGURATION (Edit dates here)
 // ==========================================
 const START_DATE = "2026-11-15"; // YYYY-MM-DD
@@ -67,7 +77,6 @@ if (totalCountEl) {
       grandTotal += teamTotal;
       todayTotal += teamToday;
 
-      // Book counts for S, M, B, MB
       const booksTotalObj = (teamData.books && teamData.books.total) || {};
       const booksDailyObj = (teamData.books && teamData.books.daily && teamData.books.daily[todayKey]) || {};
 
