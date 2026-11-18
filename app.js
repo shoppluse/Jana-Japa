@@ -485,3 +485,83 @@ if (qrSwipeArea) {
     }
   }, { passive: true });
 }
+
+// ==========================================
+// 5. 3D PAGE-FLIP SWIPE NAVIGATION
+// ==========================================
+(function init3DPageSwipe() {
+  const PAGE_ORDER = ["index.html", "album.html", "community.html"];
+  const rawFile = window.location.pathname.split("/").pop();
+  const currentPage = rawFile && PAGE_ORDER.includes(rawFile) ? rawFile : "index.html";
+  const pageIdx = PAGE_ORDER.indexOf(currentPage);
+  const mainEl = document.querySelector("main.container");
+
+  if (!mainEl || pageIdx === -1) return;
+
+  const incomingDir = sessionStorage.getItem("marathon_flip_dir");
+  if (incomingDir) {
+    sessionStorage.removeItem("marathon_flip_dir");
+    mainEl.classList.add(
+      incomingDir === "next" ? "flip-in-from-right" : "flip-in-from-left"
+    );
+  }
+
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let isNavigating = false;
+
+  document.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) return;
+
+    if (
+      e.target.closest("#qr-swipe-area") ||
+      e.target.closest(".modal:not(.hidden)") ||
+      e.target.closest(".lightbox:not(.hidden)") ||
+      e.target.closest("input, select, textarea, button")
+    ) {
+      touchStartX = 0;
+      return;
+    }
+
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+
+  document.addEventListener("touchend", (e) => {
+    if (!touchStartX || isNavigating) return;
+
+    const japaModal = document.getElementById("increment-modal");
+    const bookModal = document.getElementById("book-modal");
+    const lightbox = document.getElementById("lightbox");
+    if (
+      (japaModal && !japaModal.classList.contains("hidden")) ||
+      (bookModal && !bookModal.classList.contains("hidden")) ||
+      (lightbox && !lightbox.classList.contains("hidden"))
+    ) {
+      touchStartX = 0;
+      return;
+    }
+
+    const diffX = touchStartX - e.changedTouches[0].screenX;
+    const diffY = touchStartY - e.changedTouches[0].screenY;
+    touchStartX = 0;
+
+    if (Math.abs(diffX) < 75 || Math.abs(diffX) < Math.abs(diffY) * 1.4) return;
+
+    if (diffX > 0 && pageIdx < PAGE_ORDER.length - 1) {
+      isNavigating = true;
+      sessionStorage.setItem("marathon_flip_dir", "next");
+      mainEl.classList.add("flip-out-left");
+      setTimeout(() => {
+        window.location.href = PAGE_ORDER[pageIdx + 1];
+      }, 280);
+    } else if (diffX < 0 && pageIdx > 0) {
+      isNavigating = true;
+      sessionStorage.setItem("marathon_flip_dir", "prev");
+      mainEl.classList.add("flip-out-right");
+      setTimeout(() => {
+        window.location.href = PAGE_ORDER[pageIdx - 1];
+      }, 280);
+    }
+  }, { passive: true });
+})();
